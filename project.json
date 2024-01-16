@@ -1,4 +1,10 @@
-[
+[{
+    "key": "gedit",
+    "imgLink": "/photos/GEDIT.png",
+    "heading": "GEdit",
+    "paragraph": "GEDIT is a Graph Editor designed to simplify and enhance your graph data structuring and editing experience",
+    "readMoreLink": "https://brahmbir.github.io/GEDIT-graph-editor-/"
+  },
   {
     "key": "portfolio",
     "imgLink": "/photos/portfolio.png",
