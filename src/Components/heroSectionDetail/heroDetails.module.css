@@ -1,0 +1,103 @@
+.side {
+  font-family: monospace;
+  pointer-events: fill;
+  box-sizing: border-box;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: rgba(17, 25, 40, 0.793);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  z-index: 14;
+  position: relative;
+  margin-block: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  min-width: max(40vw, 45em);
+  width: calc(55% - max(5em, 10vw));
+
+  /* left: max(5em, 10vw); */
+  /* align-items: baseline; */
+  /* justify-content: center; */
+  padding: 5em;
+  padding-bottom: 4em;
+}
+
+.side h3 {
+  position: relative;
+  width: fit-content;
+  font-size: 2em;
+  margin-top: 0;
+}
+.side h3::after {
+  content: "🚀";
+  position: absolute;
+}
+
+.side p {
+  font-size: 1.25em;
+  padding-right: 0.75em;
+}
+.side button {
+  pointer-events: all;
+}
+.links {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  position: relative;
+  gap: 1.5em;
+  align-items: center;
+  margin-top: 2.5em;
+}
+.links::before {
+  top: -2em;
+  content: "Contact me";
+  position: absolute;
+}
+.links a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: all;
+  width: 2.5em;
+  align-self: 1/1;
+}
+.links svg {
+  fill: var(--white);
+  stroke: var(--white);
+  width: 100%;
+  height: 100%;
+}
+.links a:hover svg {
+  fill: #2e456a;
+  stroke: #2e456a;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1100px) {
+  .side {
+    min-width: 60%;
+    width: calc(60%);
+    left: auto;
+    right: 10%;
+    z-index: 15;
+    padding: 3em;
+    top: 50%;
+    transform: translateY(-50%);
+
+    position: absolute;
+    margin-block: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .side {
+    min-width: 60%;
+    right: 5%;
+    padding: 2em;
+    width: calc(90%);
+  }
+}

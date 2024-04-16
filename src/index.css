@@ -13,7 +13,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: var(--black);
+
+  background-color: #101017;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -38,4 +39,7 @@ body {
   width: 100vw;
   height: 100vh;
   padding: 0;
+}
+#root {
+  display: grid;
 }

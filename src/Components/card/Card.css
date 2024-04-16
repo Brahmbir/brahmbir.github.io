@@ -1,13 +1,6 @@
-.cardStyle:first-of-type {
-  background-color: rgb(var(--ldarkblue));
-}
-
 .details {
-  background: linear-gradient(
-    0.25turn,
-    rgb(var(--ldarkblue)),
-    rgba(var(--ldarkblue), 0.1)
-  );
+  background-image: linear-gradient(0.25turn, #2e2e44, #2e2e4411);
+  background-repeat: no-repeat;
   padding: 0 0.5em;
   backdrop-filter: blur(5px);
   overflow: clip;
@@ -22,6 +15,8 @@
   padding: 0.5em 0.5em;
   border-radius: 1em;
   transition: opacity 0.3s;
+  padding: 1.5em;
+  border: 1.5px solid #202030;
 }
 .details h3 {
   font-size: 3.5em;

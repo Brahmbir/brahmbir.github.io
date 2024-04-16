@@ -1,0 +1,83 @@
+.contain {
+  box-sizing: border-box;
+  max-width: 2560px;
+  max-height: 1440px;
+  width: 100%;
+  padding-inline: 10%;
+  height: 92.5vh;
+  display: flex;
+  position: relative;
+  background-color: #1b1b28;
+  background-image: linear-gradient(0deg, hsl(240, 15%, 8%) 40%, #00000000 100%),
+    radial-gradient(50% 100% at 70% 10%, hsl(240, 19%, 23%) 0%, #1b1b28 59%);
+}
+.co {
+  pointer-events: none;
+  display: flex;
+  margin-left: auto;
+  position: relative;
+  max-width: 1200px;
+  width: max(50vw, 600px);
+}
+.contain::before {
+  z-index: 10;
+  position: absolute;
+  bottom: -1vh;
+  content: " ";
+  backdrop-filter: blur(30px);
+  height: 7.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+}
+.co > div:not([data-role="intro"]) {
+  pointer-events: none;
+  border-radius: 9999px;
+  position: absolute;
+  aspect-ratio: 1/1;
+  background-color: #ffffff;
+}
+
+.blue {
+  background-color: #2667f5 !important;
+  background-image: radial-gradient(
+      99% 99% at 47.5% 47.5%,
+      #00000000 37.5%,
+      #84a4e8 100%
+    ),
+    radial-gradient(50% 50% at 42% 42%, #255dd5 5%, #00000000 50%);
+}
+.transparent {
+  backdrop-filter: blur(5px);
+  background-color: transparent !important;
+  background-image: radial-gradient(
+    100% 100% at 50% 50%,
+    #00000000 40%,
+    #000000ff 65%
+  );
+}
+.purple {
+  background-color: hsl(240, 25%, 26%) !important;
+  background-image: radial-gradient(
+      100% 100% at 45% 55%,
+      #073aff00 45%,
+      hsl(240, 25%, 36%) 100%
+    ),
+    radial-gradient(40% 35% at 60% 30%, hsl(240, 25%, 26%) 0%, #00000000 80%),
+    linear-gradient(30deg, hsl(240, 25%, 12%) 40%, #00000000 100%);
+}
+
+.blueShad {
+  background-color: #2667f5 !important;
+  background-image: radial-gradient(
+    99% 99% at 109% 2%,
+    #00c9ffff 0%,
+    #073aff00 100%
+  );
+}
+@media (max-width: 600px) {
+  .contain {
+    padding: 0;
+    width: 100vw;
+  }
+}
