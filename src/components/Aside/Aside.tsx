@@ -37,7 +37,7 @@ export default function Aside({ setdata, current }: IAsideProps) {
   };
   return (
     <>
-      <aside ref={Aside} className={styles.sideArea} data-menu-hidden={false}>
+      <aside ref={Aside} className={styles.sideArea} data-menu-hidden={true}>
         <Border
           selected={SectionType.Home == current.sectionIndex}
           Tittle={"Home"}

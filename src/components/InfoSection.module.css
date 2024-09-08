@@ -9,6 +9,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   position: relative;
+  z-index: 5;
   padding-block: 3em !important;
 }
 
