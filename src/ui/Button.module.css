@@ -1,0 +1,28 @@
+.btn {
+  --bgColor: transparent;
+  border: none;
+  background-color: var(--bgColor);
+  text-align: left;
+  font: inherit;
+  line-height: 1em;
+  margin-right: 0.25em;
+  padding: 0.1em;
+  display: flex;
+  gap: 0.75em;
+  align-items: center;
+}
+.btn:hover {
+  --bgColor: color-mix(in srgb, var(--red) 25%, transparent);
+}
+.btn[data-selected="true"] {
+  --bgColor: color-mix(in srgb, var(--red) 100%, transparent) !important;
+}
+
+[data-selected-group="false"] .btn:hover {
+  --bgColor: color-mix(in srgb, var(--yellow) 25%, transparent);
+}
+
+.btn > img {
+  width: 1.05em;
+  aspect-ratio: 1;
+}

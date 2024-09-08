@@ -1,0 +1,35 @@
+{
+  "data": [
+    {
+      "content": [
+        "Hi, I'm {{Brahmbir}} Singh 🤙",
+        "A {{backend-focused}} software engineer"
+      ]
+    },
+    {
+      "content": [
+        "Although my focus is on backend, most of my professional experience has been as a {{full-stack}} developer.",
+        "I also enjoy programming low level stuff, like {{C}} and tinkering with {{electronics}}."
+      ]
+    },
+    {
+      "content": [
+        "In addition to my coding pursuits, I indulge in {{game development}} as a hobby.",
+        "I'm a {{passionate}} developer, always looking for new challenges and opportunities to learn."
+      ]
+    },
+    {
+      "content": [
+        "If you like cringe-inducing experiences, feel free to connect on {{LinkedIn🔗https://www.linkedin.com/in/brahm-bir-singh-6a9115245/}}.",
+        "You can always check out my work on {{GitHub🔗https://github.com/Brahmbir}}.",
+        "You can find my resumé over here => {{resumé🔗https://brahmbir.vercel.app/Brahmbir's%20resume.pdf}}"
+      ]
+    },
+    {
+      "content": [
+        "{{Click}} on a section on the left to learn more about my {{Skills}} and {{Projects}}.",
+        "You can also {{navigate}} through the sections using the {{arrow keys}}."
+      ]
+    }
+  ]
+}

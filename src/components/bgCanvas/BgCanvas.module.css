@@ -1,0 +1,83 @@
+.hideBtn {
+  --size: 4em;
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+
+  right: calc(-0.5 * var(--size));
+  bottom: calc(-0.5 * var(--size));
+  line-height: 0.8em;
+  z-index: 10;
+}
+
+.tooltip {
+  transform: rotateZ(45deg);
+
+  padding-inline: 0.3em;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  line-height: var(--size);
+
+  text-align: left;
+  background-color: var(--comment);
+  transition: background-color 0.2s;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  pointer-events: none;
+  line-height: normal;
+  padding: 0.75em 0.5em;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  max-height: 10ch;
+  max-width: 70vw;
+  width: max-content;
+  background-color: color-mix(in srgb, var(--current) 50%, transparent);
+  color: var(--foreground);
+  text-align: center;
+  border-radius: 0.6em;
+  border-end-end-radius: 0;
+
+  bottom: calc(var(--size) + 0.25em);
+  right: calc(var(--size) + 0.25em);
+
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover + .tooltiptext {
+  visibility: visible !important;
+  opacity: 1;
+}
+
+.tooltip:hover {
+  background-color: color-mix(in srgb, var(--comment) 50%, transparent);
+}
+.hideBtn:has(.tooltip:hover) ~ * > [data-info="true"] {
+  opacity: 0 !important;
+}
+
+.hideBtn:has(.tooltip:hover) + .CAN {
+  filter: none !important;
+}
+
+.CAN {
+  filter: blur(0.14em);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0.25;
+  background-color: transparent;
+}

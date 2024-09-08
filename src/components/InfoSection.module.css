@@ -1,0 +1,51 @@
+.INfoContainer {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+}
+
+.sectOfMain {
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+  padding-block: 3em !important;
+}
+
+.PAGE {
+  opacity: 1;
+  transition: opacity 0.2s;
+
+  --hPadding: 1.5em;
+  padding: 1em var(--hPadding);
+  display: grid;
+  gap: 1.5em;
+}
+.PAGE > * {
+  max-width: 100%;
+}
+
+.PAGE pre {
+  display: block;
+  font-family: "Fira Mono", monospace, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.2rem;
+  padding: 0.5rem;
+  overflow-x: scroll;
+}
+
+@media screen and (max-width: 800px) {
+  .INfoContainer {
+    flex: 1;
+  }
+  .sectOfMain {
+    padding-block: 1em !important;
+    padding-inline: 0em !important;
+  }
+  .PAGE {
+    --hPadding: 0.75em;
+  }
+  .PAGE > * {
+    min-width: calc(100% - 2 * var(--hPadding));
+  }
+}

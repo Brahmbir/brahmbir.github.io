@@ -1,0 +1,128 @@
+.sideArea {
+  --Aside-gap: calc(1.2 * var(--gap));
+  --bgcolor: var(--background);
+  z-index: 100;
+  flex: 0.275;
+  max-width: 300px;
+  background-color: var(--bgcolor);
+  display: flex;
+  flex-direction: column;
+  gap: var(--Aside-gap);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.home {
+  height: fit-content;
+  flex: 0.25 1 auto !important;
+}
+.homebtn {
+  font: inherit;
+  padding: 0;
+  text-align: left;
+  background-color: transparent;
+  border: none;
+}
+.info {
+  flex: 10 1 auto !important;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--Aside-gap);
+}
+.part1 {
+  flex: 1 1 auto !important;
+  min-height: 0;
+}
+
+.part2 {
+  flex: 2 1 auto !important;
+  min-height: 0;
+}
+.menu {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0em 1em;
+  position: relative;
+  background-color: var(--background);
+  /* border: 0.1em solid var(--bordercolor); */
+}
+.logo {
+  font-size: x-large;
+}
+
+.menuBtn {
+  z-index: 1000;
+  position: relative;
+  width: 3.5em;
+  aspect-ratio: 1;
+  border: 0.1em solid var(--bordercolor);
+  background-color: var(--background);
+  transition: background-color 0.07s;
+  overflow: hidden;
+}
+.menuBtn:hover {
+  background-color: color-mix(in srgb, var(--faded) 20%, var(--background));
+}
+.menuBtn > svg {
+  left: 0;
+  top: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: top 0.1s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sideArea[data-menu-hidden] + .menu svg:nth-child(2) {
+  top: 100%;
+}
+
+@media screen and (max-width: 800px) {
+  .menu {
+    display: flex;
+  }
+
+  .sideArea {
+    --bgcolor: var(--current);
+    padding: calc(3 * var(--gap)) var(--gap);
+    box-sizing: border-box;
+    inset-block: 0;
+    position: absolute;
+    transition: inset-inline 0.1s, outline 0.17s;
+    outline-style: solid;
+    outline-color: color-mix(in srgb, var(--background) 80%, transparent);
+    border-right: 0.1em solid var(--faded);
+  }
+  .sideArea[data-menu-hidden="true"] {
+    inset-inline: auto 100%;
+
+    /* left: auto; */
+    /* right: 100%; */
+    outline-width: 0;
+  }
+  .sideArea[data-menu-hidden="true"] + .menu svg:nth-child(1) {
+    top: 0%;
+  }
+  .sideArea[data-menu-hidden="true"] + .menu svg:nth-child(2) {
+    top: 100%;
+  }
+
+  .sideArea[data-menu-hidden="false"] {
+    inset-inline: 0% auto;
+
+    /* left: 0%; */
+    /* right: auto; */
+    outline-width: 100vmax;
+  }
+
+  .sideArea[data-menu-hidden="false"] + .menu svg:nth-child(1) {
+    top: 100%;
+  }
+  .sideArea[data-menu-hidden="false"] + .menu svg:nth-child(2) {
+    top: 0%;
+  }
+}

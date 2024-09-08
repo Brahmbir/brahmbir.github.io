@@ -1,0 +1,80 @@
+{
+  "data": [
+    {
+      "name": "ProjectList",
+      "year": 2023,
+      "githubUrl": "https://github.com/Brahmbir/WAVESET",
+      "images": ["/Images/old/Projectlist.png"],
+
+      "content": [
+        "This website was built in {{10 days}} using only HTML, CSS and JavaScript with {{React}}.\nIt is inspired by {{Arthur Wallendorff🔗https://github.com/zyriab}}'s web design which is based on terminal user interfaces (aka TUI). \nIt is also {{completely responsive}}, with a quite distinct {{mobile}} and {{desktop}} UX.",
+        "I hope you {{enjoy}} your stay and {{come back}} soon! ;)"
+      ],
+      "technologies": ["{{HTML}}", "CSS", "{{JavaScript}},{{React}}"]
+    },
+
+    {
+      "name": "GEdit",
+      "year": 2023,
+      "demoUrl": "https://brahmbir.github.io/GEDIT-graph-editor-/",
+      "githubUrl": "https://github.com/Brahmbir/GEDIT-graph-editor-",
+      "images": ["/Images/old/GEDIT.png"],
+
+      "content": [
+        "{{GEDIT}} is a Graph Editor designed to simplify and {{enhance}} your graph data structuring and {{editing}} experience.",
+        "With intuitive features, it enables seamless {{creation}}, {{manipulation}}, and {{visualization}} of complex graphs, integrating essential elements like nodes and edges with versatile editing tools to provide a {{dynamic platform}} for graph-related tasks"
+      ],
+      "technologies": ["CSS", "{{Vite}}", "React.js", "{{TypeScript}}"]
+    },
+    {
+      "name": "PortFolio",
+      "year": 2023,
+      "demoUrl": "https://brahmbir.vercel.app/",
+      "githubUrl": "https://github.com/Brahmbir/Portfolio_V1.1_nextjs",
+      "images": [
+        "/Images/portfolio/main.png",
+        "/Images/portfolio/S1.png",
+        "/Images/portfolio/S2.png"
+      ],
+
+      "content": [
+        "A Portfolio created with {{Next.js}} and {{React.js}}. Leveraging Next.js SSR capabilities, it ensures {{lightning-fast}} load times and optional {{SEO}} performance",
+        "And {{Framer Motion.js}} brings smooth page transition effects and {{cool animations}} to life, enhancing the user experience with seamless {{interactivity}}. It perfectly complements the {{minimal design}} of the portfolio, providing {{dynamic}} visuals across multiple pages while maintaining a {{mobile responsive}} layout. This ensures a sleek, {{engaging}} experience on any device."
+      ],
+      "technologies": [
+        "{{Next.js}}",
+        "Css",
+        "Html",
+        "Vercel",
+        "{{React.js}}",
+        "Javascript",
+        "{{Framer_Motion.js}}",
+        "{{xata}} (database)"
+      ]
+    },
+
+    {
+      "name": "WaveSet",
+      "year": 2023,
+      "githubUrl": "https://github.com/Brahmbir/WAVESET",
+      "demoUrl": "https://brahmbir.github.io/WAVESET/",
+      "images": ["/Images/old/waveset.png"],
+      "content": [
+        "{{WAVESET}} is a React-based project that leverages {{Wave Function Collapse}} to {{dynamically generate}} captivating patterns for a versatile tile set.\n I attempt the tiled model and explore a variety of solutions to the {{algorithm}} in JavaScript with React.js. and also explore React {{Context api}} and used useContext and useReducer hook"
+      ],
+      "technologies": ["{{HTML}}", "CSS", "{{JavaScript}}"]
+    },
+
+    {
+      "name": "Schedula_check",
+      "year": 2021,
+      "githubUrl": "https://github.com/Brahmbir/Schedula_Check",
+      "demoUrl": "https://brahmbir.github.io/Schedula_Check/",
+      "images": ["/Images/old/schedule_check.png"],
+      "content": [
+        "Schedula Check is a {{React-based}} website that allows users to compute available meeting times by comparing two people's schedules.\n Through this project, learners can gain hands-on experience in working with {{React hooks}} and {{effectively}} manage state and side effects in a real-world application."
+      ],
+      "technologies": ["{{React.js}}", "{{JavaScript}}", "CSS"]
+    }
+  ]
+}
