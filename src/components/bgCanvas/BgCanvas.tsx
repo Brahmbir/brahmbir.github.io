@@ -5,15 +5,10 @@ import BoidSimulation from "./BoidSimulation";
 
 export default function Bgcanvas() {
   const RefCallback = useCallback((canvas: HTMLCanvasElement) => {
-    const cleanUp = () => {};
     if (canvas) {
       let Simulation = new BoidSimulation();
       Simulation.initWindow(canvas, 0.6);
       Simulation.start();
-
-      return cleanUp;
-    } else {
-      cleanUp();
     }
   }, []);
 

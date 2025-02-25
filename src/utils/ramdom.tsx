@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 export const random = (min: number, max: number) => {
   let rand = Math.random() * (max - min);
@@ -31,8 +31,8 @@ function getHtmlFromString(str: String, spanToAll: boolean = false): ReactNode {
 
   const id2 = uid();
 
-  let Result = () => (
-    <>
+  let ResultHTML = () => (
+    <React.Fragment key={"in" + id2}>
       {addBreakLine(firstSplit)}
       {restSpit.map((ele, i) => {
         let [ctext, text] = ele.split("}}");
@@ -64,15 +64,15 @@ function getHtmlFromString(str: String, spanToAll: boolean = false): ReactNode {
           </>
         );
       })}
-    </>
+    </React.Fragment>
   );
 
   return spanToAll ? (
-    <span>
-      <Result key={id2} />
+    <span key={"inSpan" + id2}>
+      <ResultHTML key={"span" + id2} />
     </span>
   ) : (
-    <Result key={id2} />
+    <ResultHTML key={id2} />
   );
 }
 
