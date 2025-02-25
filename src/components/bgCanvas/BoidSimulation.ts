@@ -1,19 +1,44 @@
-// import Cell from "./Cell";
-// import Simulation from "./Simulation";
-
 import { random } from "../../utils/ramdom";
 import Boid from "./Boid";
 
+type FrameRate = number | 24 | 30 | 60 | 114 | 120 | 144 | 240 | 360;
+
 export default class BoidSimulation {
-  private _pixelRatio: number = 1;
-  private _frameRateValue: number = 0;
-  private _frameTimeCount: number = 0;
-  private _deltaTime: number = 0;
-  private _time: number = 0;
-  private _requestAnimationFrameID: number = -1;
+  public static SizeOfBoid = 10;
+
   public Context?: CanvasRenderingContext2D;
 
-  public static SizeOfBoid = 10;
+  private boids: Array<Boid> = [];
+  private _pixelRatio: number = 1;
+
+  public separationMagnitude: number = 1;
+  public alignmentMagnitude: number = 0.5;
+  public cohesionMagnitude: number = 0.5;
+
+  private _simulationFrameRateValue: FrameRate = 24;
+  private _renderFrameRateValue: FrameRate = 30;
+
+  private simulationLoopId: number | null = null;
+  private renderLoopId: number | null = null;
+
+  private lastSimulationTime: number = 0;
+  private lastRenderTime: number = 0;
+
+  private generateBoids(context: CanvasRenderingContext2D): void {
+    let totalBoids = Math.round(
+      Math.sqrt(context.canvas.width * context.canvas.height) * 0.35
+    );
+
+    this.boids.splice(0, this.boids.length);
+
+    for (let i = 0; i < totalBoids; i++) {
+      this.boids[i] = new Boid(
+        random(0, context.canvas.width),
+        random(0, context.canvas.height),
+        PickRandomColor()
+      );
+    }
+  }
 
   public initWindow(canvas: HTMLCanvasElement, sizeOfCell: number = 0.25) {
     this._pixelRatio = Math.min(window.devicePixelRatio || 1, 2.0);
@@ -24,9 +49,12 @@ export default class BoidSimulation {
     const Context = canvas.getContext("2d", {
       willReadFrequently: true,
     });
+
     if (!Context) return;
 
     this.Context = Context;
+
+    this.Context.font = `${BoidSimulation.SizeOfBoid * 1} em Verdana`;
 
     const updateSize = ([entry]: ResizeObserverEntry[]) => {
       if (!(entry && canvas)) return;
@@ -52,80 +80,99 @@ export default class BoidSimulation {
     const resizeObserver = new ResizeObserver((e) => updateSize(e));
 
     resizeObserver.observe(canvas);
+    this.generateBoids(Context);
   }
 
-  public set frameRate(
-    value: number | 24 | 30 | 60 | 114 | 120 | 144 | 240 | 360
+  public setMagnitudes(
+    separation: number,
+    alignment: number,
+    cohesion: number
   ) {
-    this._frameRateValue = 1.0 / value;
-    if (value >= 360) {
-      this._frameRateValue = 0;
-    }
+    this.separationMagnitude = separation;
+    this.alignmentMagnitude = alignment;
+    this.cohesionMagnitude = cohesion;
   }
+  public start(): void {
+    this.lastSimulationTime = 0;
+    this.lastRenderTime = 0;
 
-  public pause() {
-    if (this._requestAnimationFrameID != 0) {
-      cancelAnimationFrame(this._requestAnimationFrameID);
-      this._requestAnimationFrameID = 0;
-    }
-  }
-  public resume() {
-    this._requestAnimationFrameID = requestAnimationFrame((t: number) =>
-      this.render(t)
+    this.simulationLoopId = requestAnimationFrame((time: number) =>
+      this.simulateLoop(time)
+    );
+    this.renderLoopId = requestAnimationFrame((time: number) =>
+      this.renderLoop(time)
     );
   }
 
-  private render(time: number) {
-    this._deltaTime = time - this._time;
-    this._time = time;
-
-    if (this._frameRateValue > 0) {
-      this._frameTimeCount += this._deltaTime * 0.001;
-      if (this._frameTimeCount >= this._frameRateValue * 0.95) {
-        this._frameTimeCount = 0;
-        this.updateFrame(time);
-      }
-    } else {
-      this.updateFrame(time);
+  public stop() {
+    if (this.simulationLoopId !== null) {
+      cancelAnimationFrame(this.simulationLoopId);
+      this.simulationLoopId = null;
     }
-    this.resume();
+    if (this.renderLoopId !== null) {
+      cancelAnimationFrame(this.renderLoopId);
+      this.renderLoopId = null;
+    }
   }
 
-  updateFrame(_time: number) {
-    if (!this.Context) return;
+  private simulateLoop(now: number) {
+    const elapsed = now - this.lastSimulationTime;
+    const targetInterval = 1000 / this._simulationFrameRateValue;
 
-    let size = 0.15;
-    this.Context.font = `${BoidSimulation.SizeOfBoid * size}em Verdana`;
-
-    this.nextState(this.Context);
-  }
-
-  public getRenderLoop(Context: CanvasRenderingContext2D) {
-    BoidSimulation.generateBoids(Context);
-  }
-
-  public setContextVariables(CtxInit: (ctx: CanvasRenderingContext2D) => void) {
-    if (!this.Context) return;
-    CtxInit(this.Context);
-  }
-
-  private nextState(ctx: CanvasRenderingContext2D) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    BoidSimulation.boids.forEach((CaBoid) => {
-      CaBoid.run(BoidSimulation.boids, ctx);
-    });
-  }
-
-  private static boids: Array<Boid> = [];
-
-  public static generateBoids(Context: CanvasRenderingContext2D) {
-    for (let index = 0; index < 100; index++) {
-      BoidSimulation.boids[index] = new Boid(
-        random(0, Context.canvas.width),
-        random(0, Context.canvas.height),
-        PickRandomColor()
+    if (elapsed >= targetInterval) {
+      this.updateSimulation();
+      this.lastSimulationTime = now - (elapsed % targetInterval);
+    }
+    if (this.simulationLoopId !== null) {
+      this.simulationLoopId = requestAnimationFrame((time: number) =>
+        this.simulateLoop(time)
       );
+    } else {
+      return;
+    }
+  }
+
+  private renderLoop(now: number) {
+    const elapsed = now - this.lastRenderTime;
+    const targetInterval = 1000 / this._renderFrameRateValue;
+
+    if (elapsed >= targetInterval) {
+      this.render();
+      this.lastRenderTime = now - (elapsed % targetInterval);
+    }
+    if (this.renderLoopId !== null) {
+      this.renderLoopId = requestAnimationFrame((time: number) =>
+        this.renderLoop(time)
+      );
+    } else {
+      return;
+    }
+  }
+  private updateSimulation() {
+    if (!this.Context) return;
+    for (const boid of this.boids) {
+      boid.update(
+        this.boids,
+        this.Context.canvas.width,
+        this.Context.canvas.height,
+        this.separationMagnitude,
+        this.alignmentMagnitude,
+        this.cohesionMagnitude
+      );
+    }
+  }
+
+  private render() {
+    if (!this.Context) return;
+
+    this.Context.clearRect(
+      0,
+      0,
+      this.Context.canvas.width,
+      this.Context.canvas.height
+    );
+    for (const boid of this.boids) {
+      boid.draw(this.Context);
     }
   }
 }

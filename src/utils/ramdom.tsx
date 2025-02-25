@@ -1,9 +1,8 @@
 import { ReactNode } from "react";
 
 export const random = (min: number, max: number) => {
-  let rand = Math.random();
-
-  return rand * (max - min) + min;
+  let rand = Math.random() * (max - min);
+  return rand + min;
 };
 
 let listOfColors = [

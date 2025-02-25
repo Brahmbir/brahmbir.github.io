@@ -1,27 +1,20 @@
-import { useRef, useEffect } from "react";
-import BoidSimulation from "./BoidSimulation";
-
+import { useCallback } from "react";
 import styles from "./BgCanvas.module.css";
 
+import BoidSimulation from "./BoidSimulation";
+
 export default function Bgcanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const RefCallback = useCallback((canvas: HTMLCanvasElement) => {
+    const cleanUp = () => {};
+    if (canvas) {
+      let Simulation = new BoidSimulation();
+      Simulation.initWindow(canvas, 0.6);
+      Simulation.start();
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-
-    let Simulation = new BoidSimulation();
-    Simulation.initWindow(canvasRef.current, 0.6);
-
-    Simulation.frameRate = 60;
-
-    Simulation.setContextVariables((ctx) => {
-      BoidSimulation.generateBoids(ctx);
-    });
-
-    Simulation.resume();
-    return () => {
-      Simulation.pause();
-    };
+      return cleanUp;
+    } else {
+      cleanUp();
+    }
   }, []);
 
   return (
@@ -32,8 +25,7 @@ export default function Bgcanvas() {
           Move the pointer out of corner to go back
         </span>
       </div>
-
-      <canvas id="canvas" className={styles.CAN} ref={canvasRef} />
+      <canvas id="canvas" className={styles.CAN} ref={RefCallback} />
     </>
   );
 }

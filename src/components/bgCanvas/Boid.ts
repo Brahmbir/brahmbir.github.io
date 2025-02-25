@@ -1,194 +1,161 @@
 import { random } from "../../utils/ramdom";
-import BoidSimulation from "./BoidSimulation";
-import Vector from "./Vector";
+import { Vector2D } from "./Vector2D";
 
 export default class Boid {
-  private acceleration: Vector;
-  private velocity: Vector;
-  private position: Vector;
-  private r: number;
   private _char: string;
   private _Color: string;
 
-  private maxspeed: number;
-  private maxforce: number;
+  private position: Vector2D = new Vector2D();
+  private velocity: Vector2D = new Vector2D();
+
   constructor(
     x: number,
     y: number,
     Color: string = "#111111",
     char: string = "A"
   ) {
-    this.acceleration = new Vector(0, 0);
-    this.velocity = new Vector(random(-1, 1), random(-1, 1));
-    this.position = new Vector(x, y);
-    this.r = 3.0;
-    this._char = char;
+    this.position = new Vector2D(x, y);
+    this.velocity = new Vector2D(random(-1, 1), random(-1, 1));
+
     this._Color = Color;
-    this.maxspeed = this.r * 1; // Maximum speed
-    this.maxforce = 0.005; // Maximum steering force
+    this._char = char;
   }
 
-  public run(boids: Array<Boid>, ctx: CanvasRenderingContext2D) {
-    this.r = BoidSimulation.SizeOfBoid * 0.35;
-    this.maxspeed = this.r * 1;
-
-    this.flock(boids);
-    this.update();
-    this.borders(ctx);
-    this.show(ctx);
-  }
-
-  private show(ctx: CanvasRenderingContext2D) {
+  public draw(ctx: CanvasRenderingContext2D) {
     // Draw a triangle rotated in the direction of velocity
-    let angle = this.velocity.heading();
     ctx.save();
-    ctx.translate(this.position.x + this.r, this.position.y + this.r);
+    ctx.translate(this.position.x, this.position.y);
 
+    let angle = this.velocity.heading();
     ctx.rotate(angle + (90 * Math.PI) / 180);
 
     let measure = ctx.measureText(this._char);
     let actualHeight =
       measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent;
+
     ctx.fillStyle = this._Color;
     ctx.fillText(this._char, -measure.width / 2, actualHeight / 2);
+
     ctx.restore();
   }
 
-  private applyForce(force: Vector) {
-    // We could add mass here if we want A = F / M
-    this.acceleration.add(force);
-  }
+  public update(
+    flock: Boid[],
+    canvasWidth: number,
+    canvasHeight: number,
+    separationMagnitude: number,
+    alignmentMagnitude: number,
+    cohesionMagnitude: number
+  ) {
+    // let unit = 10; // pixel
+    let unit = canvasWidth / 100; // pixel
 
-  private flock(boids: Array<Boid>) {
-    let separation = this.separate(boids);
-    let alignment = this.align(boids);
-    let cohesion = this.cohere(boids);
-    // Arbitrarily weight these forces
-    separation.mult(1.5);
-    alignment.mult(1.0);
-    cohesion.mult(1.0);
+    // let unit = Math.max(canvasHeight, canvasWidth);
 
-    // console.log(separation, alignment, cohesion);
-    // Add the force vectors to acceleration
-    this.applyForce(separation);
-    this.applyForce(alignment);
-    this.applyForce(cohesion);
-  }
-  // Separation
-  private separate(boids: Array<Boid>) {
-    let SearchArea = this.r * 16.6;
+    const separation = this.separate(flock, unit * 2);
+    const alignment = this.align(flock, unit * 9);
+    const cohesion = this.cohere(flock, unit * 10);
 
-    let steer = new Vector(0, 0);
-    let count = 0;
+    this.velocity.x +=
+      separation.x * separationMagnitude +
+      alignment.x * alignmentMagnitude +
+      cohesion.x * cohesionMagnitude;
+    this.velocity.y +=
+      separation.y * separationMagnitude +
+      alignment.y * alignmentMagnitude +
+      cohesion.y * cohesionMagnitude;
 
-    // For every boid in the system, check if it's too close
-    for (const singleBoid of boids) {
-      let dist = Vector.dist(this.position, singleBoid.position);
-      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-      if (dist > 0 && dist < SearchArea) {
-        // Calculate vector pointing away from neighbor
-        let diff = Vector.sub(this.position, singleBoid.position);
-
-        diff.normalize();
-        diff.ScalarDivide(dist); // Weight by distance
-        steer.add(diff);
-        count++; // Keep track of how many
-        // }
-      }
-    }
-    // Average -- divide by how many
-    if (count > 0) {
-      steer.ScalarDivide(count);
-    }
-    // As long as the vector is greater than 0
-    if (steer.mag() > 0) {
-      // Implement Reynolds: Steering = Desired - Velocity
-      steer.normalize();
-      steer.mult(this.maxspeed);
-      steer.sub(this.velocity);
-      steer.limit(this.maxforce);
-    }
-    return steer;
-  }
-
-  // Alignment
-  // For every nearby boid in the system, calculate the average velocity
-  private align(boids: Array<Boid>) {
-    let neighborDistance = this.r * 16.6;
-
-    let sum = new Vector(0, 0);
-    let count = 0;
-    for (let i = 0; i < boids.length; i++) {
-      let d = Vector.dist(this.position, boids[i].position);
-      if (d > 0 && d < neighborDistance) {
-        sum.add(boids[i].velocity);
-        count++;
-      }
-    }
-
-    if (count > 0) {
-      sum.ScalarDivide(count);
-      sum.normalize();
-      sum.mult(this.maxspeed);
-      let steer = Vector.sub(sum, this.velocity);
-      steer.limit(this.maxforce);
-      return steer;
-    } else {
-      return new Vector(0, 0);
-    }
-  }
-
-  // Cohesion
-  // For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
-  private cohere(boids: Array<Boid>) {
-    let neighborDistance = this.r * 36.6;
-    let desiredspace = this.r * 26.6;
-
-    let sum = new Vector(0, 0); // Start with empty vector to accumulate all locations
-    let count = 0;
-
-    for (const singleBoid of boids) {
-      let dist = Vector.dist(this.position, singleBoid.position);
-
-      if (dist > desiredspace && dist < neighborDistance) {
-        sum.add(singleBoid.position); // Add location
-        count++;
-      }
-    }
-    if (count > 0) {
-      sum.ScalarDivide(count);
-
-      let desired = Vector.sub(sum, this.position); // A vector pointing from the location to the target
-      desired.mult(this.maxspeed);
-
-      let steer = Vector.sub(desired, this.velocity);
-      // steer.limit(this.maxforce); // Limit to maximum steering force
-
-      // Steering = Desired minus Velocity
-      return steer;
-      // return desired;
-    } else {
-      return new Vector(0, 0);
-    }
-  }
-
-  // Wraparound
-  private borders(ctx: CanvasRenderingContext2D) {
-    if (this.position.x < -this.r) this.position.x = ctx.canvas.width + this.r;
-    if (this.position.y < -this.r) this.position.y = ctx.canvas.height + this.r;
-    if (this.position.x > ctx.canvas.width + this.r) this.position.x = -this.r;
-    if (this.position.y > ctx.canvas.height + this.r) this.position.y = -this.r;
-  }
-
-  // Method checks for nearby boids and steers away
-  private update() {
-    // Update velocity
-    this.velocity.add(this.acceleration);
     // Limit speed
-    this.velocity.limit(this.maxspeed);
-    // console.log(this.velocity);
-    this.position.add(this.velocity);
-    // Reset accelertion to 0 each cycle
-    this.acceleration.mult(0);
+    const speedLimit = 5;
+    const speed = Math.sqrt(
+      this.velocity.x * this.velocity.x + this.velocity.y * this.velocity.y
+    );
+    if (speed > speedLimit) {
+      this.velocity.x = (this.velocity.x / speed) * speedLimit;
+      this.velocity.y = (this.velocity.y / speed) * speedLimit;
+    }
+
+    this.position.x += this.velocity.x;
+    this.position.y += this.velocity.y;
+
+    if (this.position.x < 0) this.position.x = canvasWidth;
+    if (this.position.x > canvasWidth) this.position.x = 0;
+    if (this.position.y < 0) this.position.y = canvasHeight;
+    if (this.position.y > canvasHeight) this.position.y = 0;
+  }
+
+  private separate(flock: Boid[], separationDistance: number): Vector2D {
+    let sumX = 0;
+    let sumY = 0;
+    let count = 0;
+
+    for (const other of flock) {
+      const distance = Math.sqrt(
+        (this.position.x - other.position.x) ** 2 +
+          (this.position.y - other.position.y) ** 2
+      );
+      if (other !== this && distance < separationDistance) {
+        sumX += this.position.x - other.position.x;
+        sumY += this.position.y - other.position.y;
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      return new Vector2D(sumX / count, sumY / count);
+    } else {
+      return new Vector2D(0, 0);
+    }
+  }
+
+  private align(flock: Boid[], alignmentDistance: number): Vector2D {
+    let sumVx = 0;
+    let sumVy = 0;
+    let count = 0;
+
+    for (const other of flock) {
+      const distance = Math.sqrt(
+        (this.position.x - other.position.x) ** 2 +
+          (this.position.y - other.position.y) ** 2
+      );
+      if (other !== this && distance < alignmentDistance) {
+        sumVx += other.velocity.x;
+        sumVy += other.velocity.y;
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      return new Vector2D(sumVx / count / 8, sumVy / count / 8); // Reduced influence
+    } else {
+      return new Vector2D(0, 0);
+    }
+  }
+
+  private cohere(flock: Boid[], cohesionDistance: number): Vector2D {
+    let sumX = 0;
+    let sumY = 0;
+    let count = 0;
+
+    for (const other of flock) {
+      const distance = Math.sqrt(
+        (this.position.x - other.position.x) ** 2 +
+          (this.position.y - other.position.y) ** 2
+      );
+      if (other !== this && distance < cohesionDistance) {
+        sumX += other.position.x;
+        sumY += other.position.y;
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      return new Vector2D(
+        (sumX / count - this.position.x) / 100,
+        (sumY / count - this.position.y) / 100
+      ); // Reduced influence
+    } else {
+      return new Vector2D(0, 0);
+    }
   }
 }
